@@ -51,6 +51,7 @@ public class UserService {
     }
 
 
+    // TODO 进行测试
     private String getRoleHex(Integer roleId) {
         String randomStr = UUID.randomUUID().toString().substring(0, 8);
         randomStr = new StringBuilder(randomStr).replace(3, 3, String.valueOf(roleId)).toString();
