@@ -16,9 +16,9 @@ mybatis-plus:
 
 logging:
   level:
-    root: warn
+    root: info
     com:
-      nefu: debug
+      nefu: info
   pattern:
     console: logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} %-5level %C.%M[%line] - %msg%n
 server:
@@ -28,17 +28,20 @@ server:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:mysql://localhost:3306/mybatistest?serverTimezone=Asia/Shanghai
-    username: root
-    password: root
+    url: jdbc:mysql://114.116.213.241:3306/2018214444?serverTimezone=Asia/Shanghai
+    username: 2018214444
+    password: 2018214444
+my:
+  secretkey: R28K42ZEJ8LWRHU5
+  salt: 636eac2534bcfcb0
 
 ---
 spring:
   profiles: prod
   datasource:
-    url: jdbc:mysql://localhost:3306/graduation_management?createDatabaseIfNotExist=true?serverTimezone=Asia/Shanghai
-    username: root
-    password: root
+    url: jdbc:mysql://114.116.213.241:3306/2018214444?createDatabaseIfNotExist=true?serverTimezone=Asia/Shanghai
+    username: 2018214444
+    password: 2018214444
     initialization-mode: always
     schema: classpath:schema-mysql.sql
 logging:
