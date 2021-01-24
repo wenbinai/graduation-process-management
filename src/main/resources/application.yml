@@ -16,9 +16,9 @@ mybatis-plus:
 
 logging:
   level:
-    root: info
+    root: warn
     com:
-      nefu: info
+      nefu: debug
   pattern:
     console: logging.pattern.console=%d{yyyy-MM-dd HH:mm:ss} %-5level %C.%M[%line] - %msg%n
 server:
@@ -31,9 +31,7 @@ spring:
     url: jdbc:mysql://114.116.213.241:3306/2018214444?serverTimezone=Asia/Shanghai
     username: 2018214444
     password: 2018214444
-my:
-  secretkey: R28K42ZEJ8LWRHU5
-  salt: 636eac2534bcfcb0
+
 
 ---
 spring:

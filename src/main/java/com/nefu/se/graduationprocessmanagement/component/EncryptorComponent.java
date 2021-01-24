@@ -11,10 +11,10 @@ import java.util.Map;
 @Component
 @Slf4j
 public class EncryptorComponent {
-    @Value("${my.secretkey}")
-    private String secretKey;
-    @Value("${my.salt}")
-    private String salt;
+    //    @Value("${my.secretkey}")
+    private String secretKey = Constant.MY_SECRET_KEY;
+    //    @Value("${salt}")
+    private String salt = Constant.MY_SALT;
 
     @Autowired
     private ObjectMapperComponent objectMapperComponent;
