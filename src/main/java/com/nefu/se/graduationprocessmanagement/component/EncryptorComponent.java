@@ -1,8 +1,8 @@
 package com.nefu.se.graduationprocessmanagement.component;
 
+import com.nefu.se.graduationprocessmanagement.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.security.crypto.encrypt.Encryptors;
 
@@ -32,6 +32,17 @@ public class EncryptorComponent {
             log.info("解析错误");
         }
         return null;
+    }
+
+    /**
+     * 将 User 对象加密成 Json 数组
+     *
+     * @param user
+     * @return
+     */
+    public String userToJson(User user) {
+        var resultMap = Map.of("uId", user.getId(), "rId", user.getRoleId());
+        return encrypt(resultMap);
     }
 
 }
