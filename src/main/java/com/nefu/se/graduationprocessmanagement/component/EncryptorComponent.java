@@ -29,7 +29,6 @@ public class EncryptorComponent {
             String json = Encryptors.text(secretKey, salt).decrypt(encryptString);
             return objectMapperComponent.readValue(json);
         } catch (Exception e) {
-            // TODO 标记哪一个类, 方法
             log.info("解析错误");
         }
         return null;

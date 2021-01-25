@@ -29,6 +29,7 @@ public class UserService {
     private EncryptorComponent encryptorComponent;
 
     public ResultVO doLogin(User user) {
+        // 从数据库中查找用户
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("number", user.getNumber());
         User userFromDB = userMapper.selectOne(wrapper);
@@ -51,9 +52,8 @@ public class UserService {
     }
 
 
-    // TODO 进行测试
     private String getRoleHex(Integer roleId) {
-        String randomStr = UUID.randomUUID().toString().substring(0, 8);
+        String randomStr = UUID.randomUUID().toString().substring(0, 7);
         randomStr = new StringBuilder(randomStr).replace(3, 3, String.valueOf(roleId)).toString();
         log.info("randomStr ==>" + randomStr);
         return randomStr;
