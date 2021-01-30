@@ -41,7 +41,7 @@ public class EncryptorComponent {
      * @return
      */
     public String userToJson(User user) {
-        var resultMap = Map.of("uId", user.getId(), "rId", user.getRoleId());
+        var resultMap = Map.of("uId", user.getId(), "rId", user.getRole());
         return encrypt(resultMap);
     }
 

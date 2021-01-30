@@ -1,6 +1,9 @@
 package com.nefu.se.graduationprocessmanagement.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+
+import java.time.LocalDateTime;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,17 +11,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @TableName("user")
 public class User {
-    private String id;
+    private Long id;
 
     private String number;
 
+    private String name;
+
+    private Integer role;
+
+    private LocalDateTime updateTime;
+
     private String password;
-
-    private Integer roleId;
-
-    public User(String number, String password) {
-        this.number = number;
-        this.password = password;
-    }
-
 }

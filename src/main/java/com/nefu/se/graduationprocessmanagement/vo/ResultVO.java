@@ -5,7 +5,7 @@ import java.util.Map;
 public class ResultVO {
     private int code;
     private String message;
-    private Map<String, String> data;
+    private Map<String, Object> data;
 
     public ResultVO(int code, String message) {
         this.code = code;
@@ -29,11 +29,11 @@ public class ResultVO {
         return this;
     }
 
-    public Map<String, String> getData() {
+    public Map<String, Object> getData() {
         return data;
     }
 
-    public ResultVO setData(Map<String, String> data) {
+    public ResultVO setData(Map<String, Object> data) {
         this.data = data;
         return this;
     }

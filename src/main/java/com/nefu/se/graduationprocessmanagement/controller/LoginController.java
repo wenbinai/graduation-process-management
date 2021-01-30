@@ -3,11 +3,13 @@ package com.nefu.se.graduationprocessmanagement.controller;
 import com.nefu.se.graduationprocessmanagement.component.CommonComponent;
 import com.nefu.se.graduationprocessmanagement.component.EncryptorComponent;
 import com.nefu.se.graduationprocessmanagement.entity.User;
+import com.nefu.se.graduationprocessmanagement.exception.UnauthorizedException;
 import com.nefu.se.graduationprocessmanagement.service.UserService;
 import com.nefu.se.graduationprocessmanagement.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -32,9 +34,9 @@ public class LoginController {
         // 查找数据库中是否存在用户
         User u = Optional.ofNullable(userService.getUser(user.getNumber()))
                 .orElseThrow(() -> {
-                    // TODO 抛出异常
-                    log.info("用户名密码错误");
-                    return null;
+                    // 抛出异常(统一异常处理)
+                    log.debug("用户名密码错误");
+                    return new UnauthorizedException(UnauthorizedException.LOGIN_ERROR);
                 });
         // 判断用户名密码是否正确
         if (!passwordEncoder.matches(user.getPassword(), u.getPassword())) {
@@ -46,7 +48,7 @@ public class LoginController {
         // 返回随机生成的10位随机字符
         return ResultVO.successResultVO()
                 .setMessage("登陆成功")
-                .setData(Map.of("role", getRoleHex(u.getRoleId())));
+                .setData(Map.of("role", getRoleHex(u.getRole())));
     }
 
     private String getRoleHex(int roleId) {

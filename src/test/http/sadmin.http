@@ -1,0 +1,44 @@
+###
+POST http://localhost:8080/api/sadmin/teachers
+Content-Type: application/json
+
+[
+  {
+    "number": "1003",
+    "name": "李明",
+    "role": "2",
+    "title": "讲师"
+  },
+  {
+    "number": "1004",
+    "name": "李1",
+    "role": "2",
+    "title": "讲师"
+  },
+  {
+    "number": "1005",
+    "name": "李2",
+    "role": "4",
+    "title": "讲师"
+  },
+  {
+    "number": "1006",
+    "name": "李6",
+    "role": "2",
+    "title": "讲师"
+  },
+  {
+    "number": "1007",
+    "name": "李7",
+    "role": "4",
+    "title": "讲师"
+  },
+  {
+    "number": "1008",
+    "name": "李8",
+    "role": "2",
+    "title": "讲师"
+  }
+]
+
+###

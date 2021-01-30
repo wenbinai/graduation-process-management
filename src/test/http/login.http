@@ -1,4 +1,4 @@
-###
+### 测试登陆接口
 POST http://localhost:8080/api/login
 Content-Type: application/json
 
@@ -8,4 +8,31 @@ Content-Type: application/json
 }
 
 
-###
+### 测试请求地址出错
+POST http://localhost:8080/api/loginCount
+Content-Type: application/json
+
+{
+  "number": "2018214444",
+  "password": "2018214444"
+}
+
+### 测试参数类型不匹配
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+  "number": 2018214444,
+  "password": "2018214444"
+}
+
+### 测试参数不合法
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+  "number": "2018214444",
+  "passwords": "2018214444"
+}
+
+
