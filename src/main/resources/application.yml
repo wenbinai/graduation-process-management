@@ -31,7 +31,8 @@ spring:
     url: jdbc:mysql://114.116.213.241:3306/graduation_process_management?serverTimezone=Asia/Shanghai
     username: 2046204600
     password: 2046204600
-
+    hikari:
+      connection-timeout: 120000
 
 ---
 spring:

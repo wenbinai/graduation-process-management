@@ -58,7 +58,7 @@ public class LoginController {
         return sb.toString();
     }
 
-    @RequestMapping(value = "exception", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH})
+    @RequestMapping(value = "exception", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH, RequestMethod.PUT})
     public ResultVO getExp(HttpServletRequest request) {
         log.debug("exp");
         return (ResultVO) request.getAttribute("exception");

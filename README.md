@@ -1,5 +1,6 @@
 # graduation-process-management
 #### 21-02-04
+- 修改数据库连接池连接等待时间
 - 修复异常处理Controller不能支持Patch请求的错误
 - 修复secretkey和salt为非16进制的bug (salt和secretkey不能为非16进制表示的字符串)
 - 修复导入教师时, 密码为明文的bug (忘记加密)
