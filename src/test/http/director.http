@@ -1,0 +1,15 @@
+### 修改教师角色
+PATCH http://localhost:8080/api/director/teachers/1357136389439852545/role
+authorization: a7b799e87429ef6b8c44e2856ffc482f71764e8395f0f407edc3f1b076099e07e5e36996ed2cd2dcb30e798c1f0304f6e5333bcbe11f727cc164151c966723af
+Content-Type: application/json
+
+### 测试用户未登陆时
+PATCH http://localhost:8080/api/director/teachers/1357136389439852545/role
+Content-Type: application/json
+
+### 测试修改密码功能
+PUT http://localhost:8080/api/director/teachers/1357136387518861313/password
+authorization: a7b799e87429ef6b8c44e2856ffc482f71764e8395f0f407edc3f1b076099e07e5e36996ed2cd2dcb30e798c1f0304f6e5333bcbe11f727cc164151c966723af
+Content-Type: application/json
+
+###

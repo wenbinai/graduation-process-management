@@ -29,7 +29,7 @@ public class EncryptorComponent {
             String json = Encryptors.text(secretKey, salt).decrypt(encryptString);
             return objectMapperComponent.readValue(json);
         } catch (Exception e) {
-            log.info("解析错误");
+            log.debug("解析错误");
         }
         return null;
     }

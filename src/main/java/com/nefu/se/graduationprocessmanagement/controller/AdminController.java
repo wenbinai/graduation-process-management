@@ -8,6 +8,7 @@ import com.nefu.se.graduationprocessmanagement.service.UserService;
 import com.nefu.se.graduationprocessmanagement.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,12 +26,12 @@ public class AdminController {
     private UserService userService;
     @Autowired
     private TeacherService teacherService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/teachers")
     public ResultVO initTeachers(@RequestBody List<TeacherDto> teacherDtos) {
         // TODO 对teacherDto 进行判断检验
-
-
         // 忽略 role 为 4 的
         teacherDtos = teacherDtos.stream()
                 .filter(teacherDto -> {
@@ -61,7 +62,7 @@ public class AdminController {
             User user = new User();
             user.setNumber(teacherDto.getNumber());
             user.setName(teacherDto.getName());
-            user.setPassword(teacherDto.getNumber());
+            user.setPassword(passwordEncoder.encode(teacherDto.getNumber()));
             user.setRole(Integer.valueOf(teacherDto.getRole()));
             userService.addUser(user);
             // 插入到teacher表中

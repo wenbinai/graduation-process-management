@@ -3,8 +3,16 @@ POST http://localhost:8080/api/login
 Content-Type: application/json
 
 {
-  "number": "2018214444",
-  "password": "2018214444"
+  "number": "1004",
+  "password": "1004"
+}
+### 测试登陆接口
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+"number": "string2",
+"password": "string2"
 }
 
 

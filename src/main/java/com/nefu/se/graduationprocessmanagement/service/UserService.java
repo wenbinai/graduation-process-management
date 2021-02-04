@@ -30,4 +30,15 @@ public class UserService {
     }
 
 
+    public int updateRole(String uid) {
+        return userMapper.updateRoleById(uid);
+    }
+
+    public User getUserById(String uid) {
+        return userMapper.selectById(uid);
+    }
+
+    public int updatePasswordById(String uid, String password) {
+        return userMapper.updatePasswordById(uid, password);
+    }
 }

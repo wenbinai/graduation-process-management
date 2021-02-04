@@ -9,9 +9,9 @@ import com.nefu.se.graduationprocessmanagement.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.Optional;
 
@@ -56,6 +56,12 @@ public class LoginController {
         sb = sb.replace(3, 3, String.valueOf(roleId));
         log.info("sb ==>" + sb.toString());
         return sb.toString();
+    }
+
+    @RequestMapping(value = "exception", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PATCH})
+    public ResultVO getExp(HttpServletRequest request) {
+        log.debug("exp");
+        return (ResultVO) request.getAttribute("exception");
     }
 
 }
