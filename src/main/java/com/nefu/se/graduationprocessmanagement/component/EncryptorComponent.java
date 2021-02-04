@@ -44,5 +44,4 @@ public class EncryptorComponent {
         var resultMap = Map.of("uId", user.getId(), "rId", user.getRole());
         return encrypt(resultMap);
     }
-
 }
