@@ -1,10 +1,20 @@
+### 测试服务器登陆接口
+POST http://122.9.36.233:8080/api/login
+Content-Type: application/json
+
+{
+  "number": "1006",
+  "password": "1006"
+}
+
+
 ### 测试登陆接口
 POST http://localhost:8080/api/login
 Content-Type: application/json
 
 {
-  "number": "1004",
-  "password": "1004"
+  "number": "1006",
+  "password": "1006"
 }
 ### 测试登陆接口
 POST http://localhost:8080/api/login

@@ -21,9 +21,12 @@ public class DirectorInterceptor extends HandlerInterceptorAdapter {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String header = request.getHeader(Constant.AUTHORIZATION);
+        log.debug("header ==>" + header);
         try {
             Map<String, Object> map = encryptorComponent.decrypt(header);
+            log.debug("map ==>" + map);
             Integer roleId = (Integer) map.get("rId");
+            log.debug("roleId==>" + roleId);
             if (roleId == 4) {
                 return true;
             } else {
@@ -36,6 +39,5 @@ public class DirectorInterceptor extends HandlerInterceptorAdapter {
             request.getRequestDispatcher("/api/exception").forward(request, response);
             return false;
         }
-
     }
 }

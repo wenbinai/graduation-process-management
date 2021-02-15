@@ -1,4 +1,6 @@
 # graduation-process-management
+#### 21-02-15
+- 添加了获取所有教师信息通用接口
 #### 21-02-04
 - 修改数据库连接池连接等待时间
 - 修复异常处理Controller不能支持Patch请求的错误

@@ -2,6 +2,7 @@ package com.nefu.se.graduationprocessmanagement.controller;
 
 import com.nefu.se.graduationprocessmanagement.entity.User;
 import com.nefu.se.graduationprocessmanagement.exception.UnauthorizedException;
+import com.nefu.se.graduationprocessmanagement.service.TeacherService;
 import com.nefu.se.graduationprocessmanagement.service.UserService;
 import com.nefu.se.graduationprocessmanagement.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,8 @@ import java.util.Optional;
 public class DirectorController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private TeacherService teacherService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -40,12 +43,14 @@ public class DirectorController {
      */
     @PatchMapping("/teachers/{uid}/role")
     public ResultVO updateRole(@PathVariable(value = "uid") String uid) {
+        log.debug("进入==>");
         // 判断uid指定的用户是否存在
         User userFromDB = Optional.ofNullable(userService.getUserById(uid))
                 .orElseThrow(() -> {
                     return new UnauthorizedException("用户不存在");
                 });
         // 判断是否为教师
+        log.debug("userFromDB==>", userFromDB);
         Integer role = userFromDB.getRole();
         if (role != 2) {
             return ResultVO.failClientResultVO()
@@ -53,6 +58,7 @@ public class DirectorController {
         }
         // 修改权限为4 todo 判断操作是否成功
         userService.updateRole(uid);
+        log.debug("修改成功");
         // 返回角色
         return ResultVO.successResultVO()
                 .setData(Map.of("role", 4));
@@ -65,12 +71,30 @@ public class DirectorController {
      * @param uid
      * @return
      */
-//    @PatchMapping("/teachers/{uid}/info")
-//    public ResultVO updateInfo(@PathVariable(value = "uid") String uid) {
-//        // 判断uid指定的用户是否存在
-//        // 判断是否为教师
-//        // 更新教师的简介信息
-//    }
+    @PatchMapping("/teachers/{uid}/info")
+    public ResultVO updateInfo(@PathVariable(value = "uid") String uid,
+                               @RequestBody Map<String, String> map) {
+        // 判断uid指定的用户是否存在
+        User userFromDB = Optional.ofNullable(userService.getUserById(uid))
+                .orElseThrow(() -> {
+                    return new UnauthorizedException("用户不存在");
+                });
+        // 判断是否为教师
+        log.debug("userFromDB==>" + userFromDB);
+        Integer role = userFromDB.getRole();
+        if (role != 2) {
+            return ResultVO.failClientResultVO()
+                    .setMessage("用户身份不正确");
+        }
+        log.debug("map==>" + map);
+        // 更新教师的简介信息
+        String name = map.get("name");
+        log.debug("name==>" + name);
+        String title = map.get("title");
+        log.debug("title==>" + title);
+        teacherService.updateTitle(title, uid);
+        return ResultVO.successResultVO();
+    }
 
     /**
      * 重置教师密码

@@ -3,7 +3,9 @@ package com.nefu.se.graduationprocessmanagement.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.nefu.se.graduationprocessmanagement.entity.Teacher;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,4 +15,6 @@ import java.util.List;
 public interface TeacherMapper extends BaseMapper<Teacher> {
     @Select("select * from `teacher`")
     List<Teacher> listAllTeachers();
+    @Update("update `teacher` set title = #{title} where id = #{id}")
+    int updateTitleById(@Param("title") String title, @Param("id") String id);
 }

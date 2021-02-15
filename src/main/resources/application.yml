@@ -38,9 +38,9 @@ spring:
 spring:
   profiles: prod
   datasource:
-    url: jdbc:mysql://114.116.213.241:3306/114.116.213.241:3306/graduation_process_management?createDatabaseIfNotExist=true?serverTimezone=Asia/Shanghai
-    username: 2018214444
-    password: 2018214444
+    url: jdbc:mysql://114.116.213.241:3306/graduation_process_management?createDatabaseIfNotExist=true?serverTimezone=Asia/Shanghai
+    username: 2046204600
+    password: 2046204600
     initialization-mode: always
     schema: classpath:schema-mysql.sql
 logging:
