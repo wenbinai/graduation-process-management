@@ -1,7 +1,7 @@
 package com.nefu.se.graduationprocessmanagement.interceptor;
 
-import com.nefu.se.graduationprocessmanagement.component.Constant;
-import com.nefu.se.graduationprocessmanagement.component.EncryptorComponent;
+import com.nefu.se.graduationprocessmanagement.common.Constant;
+import com.nefu.se.graduationprocessmanagement.common.EncryptorComponent;
 import com.nefu.se.graduationprocessmanagement.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +30,12 @@ public class DirectorInterceptor extends HandlerInterceptorAdapter {
             if (roleId == 4) {
                 return true;
             } else {
-                request.setAttribute("exception", ResultVO.unAuthorizationResultVO());
+                request.setAttribute("exception", ResultVO.fail(403, "权限不够"));
                 request.getRequestDispatcher("/api/exception").forward(request, response);
                 return false;
             }
         } catch (Exception e) {
-            request.setAttribute("exception", ResultVO.unAuthorizationResultVO());
+            request.setAttribute("exception", ResultVO.fail(403, "权限不够"));
             request.getRequestDispatcher("/api/exception").forward(request, response);
             return false;
         }

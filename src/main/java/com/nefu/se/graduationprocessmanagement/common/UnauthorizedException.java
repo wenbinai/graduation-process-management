@@ -1,4 +1,4 @@
-package com.nefu.se.graduationprocessmanagement.exception;
+package com.nefu.se.graduationprocessmanagement.common;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;

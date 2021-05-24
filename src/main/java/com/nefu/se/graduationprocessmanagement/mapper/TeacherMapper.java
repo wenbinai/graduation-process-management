@@ -15,6 +15,10 @@ import java.util.List;
 public interface TeacherMapper extends BaseMapper<Teacher> {
     @Select("select * from `teacher`")
     List<Teacher> listAllTeachers();
+
     @Update("update `teacher` set title = #{title} where id = #{id}")
     int updateTitleById(@Param("title") String title, @Param("id") String id);
+
+    @Update("update `teacher` set quantity = #{quantity} where id = #{id}")
+    int updateQuantityById(@Param("id") String id, @Param("quantity") int quantity);
 }

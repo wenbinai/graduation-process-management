@@ -2,7 +2,6 @@ package com.nefu.se.graduationprocessmanagement.service;
 
 import com.nefu.se.graduationprocessmanagement.entity.Teacher;
 import com.nefu.se.graduationprocessmanagement.mapper.TeacherMapper;
-import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,5 +36,13 @@ public class TeacherService {
 
     public int updateTitle(String title, String id) {
         return teacherMapper.updateTitleById(title, id);
+    }
+
+    public int deleteTeacher(String tid) {
+        return teacherMapper.deleteById(tid);
+    }
+
+    public int updateQuantity(String id, int quantity) {
+        return teacherMapper.updateQuantityById(id, quantity);
     }
 }

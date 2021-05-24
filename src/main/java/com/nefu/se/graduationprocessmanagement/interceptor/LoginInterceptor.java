@@ -1,6 +1,6 @@
 package com.nefu.se.graduationprocessmanagement.interceptor;
 
-import com.nefu.se.graduationprocessmanagement.component.Constant;
+import com.nefu.se.graduationprocessmanagement.common.Constant;
 import com.nefu.se.graduationprocessmanagement.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         log.debug("auth==>" + auth);
         if (auth == null || auth.length() < 50) {
             log.debug("LoginInterceptor");
-            request.setAttribute("exception", ResultVO.unAuthorizationResultVO());
+            request.setAttribute("exception", ResultVO.fail(403, "用户未登录"));
             request.getRequestDispatcher("/api/exception").forward(request, response);
             return false;
         } else {

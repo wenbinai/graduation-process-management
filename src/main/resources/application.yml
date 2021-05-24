@@ -41,8 +41,8 @@ spring:
     url: jdbc:mysql://114.116.213.241:3306/graduation_process_management?createDatabaseIfNotExist=true?serverTimezone=Asia/Shanghai
     username: 2046204600
     password: 2046204600
-    initialization-mode: always
-    schema: classpath:schema-mysql.sql
+#    initialization-mode: always
+#    schema: classpath:schema-mysql.sql
 logging:
   level:
     root: warn

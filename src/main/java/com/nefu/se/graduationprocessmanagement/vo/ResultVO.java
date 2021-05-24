@@ -1,57 +1,47 @@
 package com.nefu.se.graduationprocessmanagement.vo;
 
+import lombok.*;
+
 import java.util.Map;
 
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ResultVO {
     private int code;
-    private String message;
+    private String msg;
     private Map<String, Object> data;
 
-    public ResultVO(int code, String message) {
-        this.code = code;
-        this.message = message;
+
+    public static ResultVO successResultVO(Map data) {
+        return ResultVO.builder()
+                .code(200)
+                .data(data)
+                .msg("请求成功")
+                .build();
     }
 
-    public int getCode() {
-        return code;
+    public static ResultVO fail(int code, String msg) {
+        return ResultVO.builder()
+                .code(code)
+                .msg(msg)
+                .build();
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public static ResultVO unAuthorizationResultVO(String msg) {
+        return ResultVO.builder()
+                .code(403)
+                .msg(msg)
+                .build();
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public ResultVO setMessage(String message) {
-        this.message = message;
-        return this;
-    }
-
-    public Map<String, Object> getData() {
-        return data;
-    }
-
-    public ResultVO setData(Map<String, Object> data) {
-        this.data = data;
-        return this;
-    }
-
-
-    public static ResultVO successResultVO() {
-        return new ResultVO(200, "请求成功");
-    }
-
-    public static ResultVO unAuthorizationResultVO() {
-        return new ResultVO(403, "没有权限");
-    }
-
-    public static ResultVO failServerResultVO() {
-        return new ResultVO(500, "服务端休息了...");
-    }
 
     public static ResultVO failClientResultVO() {
-        return new ResultVO(400, "客户端传入数据错误");
+        return ResultVO.builder()
+                .code(400)
+                .msg("客户端传入数据错误")
+                .build();
     }
 }

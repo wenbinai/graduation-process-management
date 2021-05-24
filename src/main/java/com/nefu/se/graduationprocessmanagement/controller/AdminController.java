@@ -6,17 +6,22 @@ import com.nefu.se.graduationprocessmanagement.entity.User;
 import com.nefu.se.graduationprocessmanagement.service.TeacherService;
 import com.nefu.se.graduationprocessmanagement.service.UserService;
 import com.nefu.se.graduationprocessmanagement.vo.ResultVO;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Api(value = "处理管理员相关请求", tags = {"Authorization, Admin"})
 @RequestMapping("/api/sadmin")
 @RestController
+@Transactional
 @Slf4j
 public class AdminController {
     @Autowired
@@ -26,13 +31,16 @@ public class AdminController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @ApiOperation("列出所有教师")
     @GetMapping("/teachers")
     public ResultVO listTeachers() {
+        // TODO: 添加Redis缓存
         List<Teacher> teachers = teacherService.listTeachers();
-        return ResultVO.successResultVO()
-                .setData(Map.of("teachers", teachers));
+        return ResultVO.successResultVO(Map.of("teachers", teachers));
     }
 
+    // TODO: 重构逻辑
+    @ApiOperation("导入教师名单")
     @PostMapping("/teachers")
     public ResultVO initTeachers(@RequestBody List<TeacherDto> teacherDtos) {
         // TODO 对teacherDto 进行判断检验
@@ -74,15 +82,13 @@ public class AdminController {
             // 复用id
             teacher.setId(user.getId());
             teacher.setTitle(teacherDto.getTitle());
-            teacher.setQuantity((short) 0);
+            teacher.setQuantity(0);
             teacherService.addTeacher(teacher);
         }));
 
         List<Teacher> teachers = teacherService.listTeachers();
 
         // TODO 返回值需要修改
-        return ResultVO.successResultVO()
-                .setMessage("初始化成功")
-                .setData(Map.of("teachers", teachers));
+        return ResultVO.successResultVO(Map.of("teachers", teachers));
     }
 }

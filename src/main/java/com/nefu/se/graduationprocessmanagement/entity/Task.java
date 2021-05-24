@@ -2,17 +2,14 @@ package com.nefu.se.graduationprocessmanagement.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
+import lombok.*;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
+@Setter
+@Getter
+@ToString
 @NoArgsConstructor
 @TableName("task")
 public class Task {
-    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     private String title;
@@ -23,11 +20,11 @@ public class Task {
 
     private LocalDateTime endTime;
 
-    private Short type;
+    private Integer type;
 
-    private Short status;
+    private Integer status;
 
-    private Short target;
+    private Integer target;
 
     private Long teacherId;
 

@@ -1,7 +1,9 @@
 package com.nefu.se.graduationprocessmanagement.component;
 
-import com.nefu.se.graduationprocessmanagement.entity.User;
+import com.nefu.se.graduationprocessmanagement.common.Constant;
+import com.nefu.se.graduationprocessmanagement.common.EncryptorComponent;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.codec.Hex;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -16,6 +18,9 @@ import java.util.Objects;
 @Component
 @Slf4j
 public class CommonComponent {
+    @Autowired
+    private EncryptorComponent encryptorComponent;
+
     /**
      * 获取当前请求
      *
@@ -36,6 +41,21 @@ public class CommonComponent {
         return ((ServletRequestAttributes) Objects
                 .requireNonNull(RequestContextHolder.getRequestAttributes()))
                 .getResponse();
+    }
+
+    public String getUserId() {
+        HttpServletRequest request = getCurrentRequest();
+        HttpServletResponse response = getCurrentResponse();
+        String header = request.getHeader(Constant.AUTHORIZATION);
+        log.debug("header ==>" + header);
+        try {
+            Map<String, Object> map = encryptorComponent.decrypt(header);
+            String uId = (String) map.get("uId");
+            log.debug("uId==>" + uId);
+            return uId;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     // 单例模式, 提出, 减少数组创建次数
