@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @Mapper
@@ -21,4 +22,6 @@ public interface TeacherMapper extends BaseMapper<Teacher> {
 
     @Update("update `teacher` set quantity = #{quantity} where id = #{id}")
     int updateQuantityById(@Param("id") String id, @Param("quantity") int quantity);
+
+
 }

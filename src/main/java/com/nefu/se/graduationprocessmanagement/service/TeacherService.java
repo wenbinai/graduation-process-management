@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -23,6 +24,14 @@ public class TeacherService {
      */
     public int addTeacher(Teacher teacher) {
         return teacherMapper.insert(teacher);
+    }
+
+    public void updateInfo(Map<String, String> map, long id) {
+        Teacher teacher = new Teacher();
+        teacher.setId(id);
+        teacher.setTitle(map.get("title"));
+        teacher.setDescription(map.get("description"));
+        teacherMapper.updateById(teacher);
     }
 
     /**

@@ -1,0 +1,11 @@
+### 测试教师更改信息接口
+PATCH http://localhost:8080/api/teachers/info
+authorization: 18287c6cc7983c1b17bf44dedfc7f023ae66d25e8e1ec3d014ee7a023c85b8560773afebc9277ea3e07d256c34f5e025472442158dba8e558da500be33957ecd
+Content-Type: application/json
+
+{
+  "title": "王波",
+  "description": "擅长Java, Vue技术"
+}
+
+###

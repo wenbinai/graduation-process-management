@@ -1,28 +1,34 @@
 package com.nefu.se.graduationprocessmanagement.interceptor;
 
 import com.nefu.se.graduationprocessmanagement.common.Constant;
+import com.nefu.se.graduationprocessmanagement.common.EncryptorComponent;
+import com.nefu.se.graduationprocessmanagement.common.MyException;
 import com.nefu.se.graduationprocessmanagement.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 @Component
 @Slf4j
 public class LoginInterceptor extends HandlerInterceptorAdapter {
+    @Autowired
+    private EncryptorComponent encryptorComponent;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String auth = request.getHeader(Constant.AUTHORIZATION);
-        log.debug("auth==>" + auth);
+        log.info("auth: {}", auth);
         if (auth == null || auth.length() < 50) {
-            log.debug("LoginInterceptor");
-            request.setAttribute("exception", ResultVO.fail(403, "用户未登录"));
-            request.getRequestDispatcher("/api/exception").forward(request, response);
-            return false;
+            throw new MyException(401, "未登录");
         } else {
             // TODO 获取用户的个人roleId
+            Map<String, Object> userMap = encryptorComponent.decrypt(auth);
+            request.setAttribute("id", userMap.get("uId"));
             return true;
         }
     }
