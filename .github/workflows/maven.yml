@@ -27,7 +27,7 @@ jobs:
         run: mvn -B package --file pom.xml -DskipTests
         # 发布镜像
       - name: push to package
-        run: |
+        run:
           # 使用个人令牌或密码进行docker登录
           ${{ secrets.DOCKER_LOGIN }}
           # 根据指定的目录内的Dockerfile进行构建，由于是当前目录，所以就是一个点，打标签 服务器/仓库/镜像:版本
