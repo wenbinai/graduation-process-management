@@ -17,11 +17,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 11
-      uses: actions/setup-java@v2
-      with:
-        java-version: '11'
-        distribution: 'adopt'
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml -DskipTests
+      - uses: actions/checkout@v2
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+          distribution: 'adopt'
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml -DskipTests
+        # 发布镜像
+      - name: push to package
+        run: |
+          # 使用个人令牌或密码进行docker登录
+          ${{ secrets.DOCKER_LOGIN }}
+          # 根据指定的目录内的Dockerfile进行构建，由于是当前目录，所以就是一个点，打标签 服务器/仓库/镜像:版本
+          docker build . -t docker.pkg.github.com/wenbinai/graduation-process-management/graduation-process-management:latest
+          # 将镜像推送到镜像服务器
+          docker push docker.pkg.github.com/wenbinai/graduation-process-management/graduation-process-management:latest
+#  # 持续部署
+#  deploy:
+#    # 需要build执行完才能执行部署
+#    needs: [ build ]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: deploy
+#        # 使用第三方提供的登录actions
+#        uses: appleboy/ssh-action@master
+#        # 登录需要的参数
+#        with:
+#          host: ${{ secrets.SERVER_HOST }}
+#          username: ${{ secrets.SERVER_USERNAME }}
+#          password: ${{ secrets.SERVER_PASSWORD }}
+#          # 登录后执行命令
+#          script: |
+#            # 进入到项目文件夹中
+#            cd /home/erjiangao/services/tutor-selection-tool
+#            # 重新基于docker-compose.yml拉取镜像
+#            docker-compose pull
+#            # 如果文件名不叫docker-compose.yml，则加-f参数，基于指定文件执行后台启动
+#            docker-compose up -d
+#            [ $(docker images -f dangling=true docker.pkg.github.com/erjiangao/tutor-selection-tool/tutor-selection-tool:latest -q) ] && \
+#            docker rmi $(docker images -f dangling=true docker.pkg.github.com/erjiangao/tutor-selection-tool/tutor-selection-tool:latest -q)
