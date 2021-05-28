@@ -26,7 +26,6 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         if (auth == null || auth.length() < 50) {
             throw new MyException(401, "未登录");
         } else {
-            // TODO 获取用户的个人roleId
             Map<String, Object> userMap = encryptorComponent.decrypt(auth);
             request.setAttribute("id", userMap.get("uId"));
             return true;

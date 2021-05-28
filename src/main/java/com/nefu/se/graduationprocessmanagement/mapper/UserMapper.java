@@ -20,8 +20,8 @@ public interface UserMapper extends BaseMapper<User> {
     List<User> listAllUsers();
 
     @Update("update `user` set role = 4 where id = #{uid}")
-    int updateRoleById(String uid);
+    int updateRoleById(Long uid);
 
     @Update("update `user` set password = #{password} where id = #{id}")
-    int updatePasswordById(@Param("id") String id, @Param("password") String password);
+    int updatePasswordById(@Param("id") Long id, @Param("password") String password);
 }

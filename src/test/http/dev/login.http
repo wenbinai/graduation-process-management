@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
   "number": "1008",
-  "password": "1008"
+  "password": "123456"
 }
 ### 测试登陆接口
 POST http://localhost:8080/api/login

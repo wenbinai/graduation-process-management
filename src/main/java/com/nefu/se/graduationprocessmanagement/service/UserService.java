@@ -22,7 +22,13 @@ public class UserService {
     }
 
     public int addUser(User user) {
-        return userMapper.insert(user);
+        int res = 0;
+        try {
+            res = userMapper.insert(user);
+        } catch (Exception e) {
+            throw e;
+        }
+        return res;
     }
 
     public List<User> listAllUsers() {
@@ -30,15 +36,23 @@ public class UserService {
     }
 
 
-    public int updateRole(String uid) {
+    public int updateRole(Long uid) {
         return userMapper.updateRoleById(uid);
     }
 
-    public User getUserById(String uid) {
+    public User getUserById(Long uid) {
         return userMapper.selectById(uid);
     }
 
-    public int updatePasswordById(String uid, String password) {
+    public int updatePasswordById(Long uid, String password) {
         return userMapper.updatePasswordById(uid, password);
+    }
+
+    public void insert(User user) {
+        try {
+            userMapper.insert(user);
+        } catch (Exception e) {
+            throw e;
+        }
     }
 }

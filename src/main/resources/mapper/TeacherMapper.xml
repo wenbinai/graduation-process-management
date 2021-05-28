@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nefu.se.graduationprocessmanagement.mapper.TeacherMapper">
+    <select id="listAllTeachers" resultType="com.nefu.se.graduationprocessmanagement.dto.TeacherDTO">
+        select u.number, u.name, u.role, t.title, t.quantity
+        from user u join teacher t
+        where t.id = u.id;
+    </select>
+
+    <select id="listTeacherInfos" resultType="com.nefu.se.graduationprocessmanagement.dto.TeacherInfoDTO">
+        select u.name, t.*
+        from user u join teacher t
+        where t.id = u.id;
+    </select>
+</mapper>

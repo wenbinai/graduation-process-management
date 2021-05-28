@@ -1,8 +1,10 @@
 package com.nefu.se.graduationprocessmanagement.controller;
 
-import com.nefu.se.graduationprocessmanagement.dto.TeacherDto;
+import com.nefu.se.graduationprocessmanagement.common.Constant;
+import com.nefu.se.graduationprocessmanagement.common.MyException;
+import com.nefu.se.graduationprocessmanagement.dto.TeacherDTO;
 import com.nefu.se.graduationprocessmanagement.dto.TeacherQuantity;
-import com.nefu.se.graduationprocessmanagement.entity.Teacher;
+import com.nefu.se.graduationprocessmanagement.entity.Student;
 import com.nefu.se.graduationprocessmanagement.entity.User;
 import com.nefu.se.graduationprocessmanagement.common.UnauthorizedException;
 import com.nefu.se.graduationprocessmanagement.service.StudentService;
@@ -43,26 +45,41 @@ public class DirectorController {
      */
     @ApiOperation("统一更新全部教师带学生数目")
     @PatchMapping("/teachers/quantity")
-    public ResultVO updateQuantity(@RequestBody List<TeacherQuantity> teacherQuantities) {
+    public ResultVO updateQuantity(@RequestBody List<Map<String, Object>> teacherQuantities) {
         teacherQuantities.stream()
                 .forEach((teacherQuantity) -> {
-                    teacherService.updateQuantity(teacherQuantity.getId(), teacherQuantity.getQuantity());
+                    teacherService.updateQuantity((Long) teacherQuantity.get("id"), (Integer) teacherQuantity.get("quantity"));
                 });
-        List<Teacher> teachers = teacherService.listTeachers();
+        List<TeacherDTO> teachers = teacherService.listTeachers();
         log.debug("after update teachers ==>" + teachers);
-        return ResultVO.successResultVO(Map.of("teachers", teachers));
+        return ResultVO.success(Map.of("teachers", teachers));
     }
 
     /**
-     * TODO
      * 导入学生功能
      *
      * @return
      */
     @ApiOperation("批量导入学生名单")
     @PostMapping("/students")
-    public ResultVO initStudents() {
-
+    public ResultVO initStudents(@RequestBody List<Map<String, Object>> studnets) {
+        for (Map<String, Object> studnet : studnets) {
+            User user = new User();
+            user.setName((String) studnet.get("name"));
+            user.setNumber((String) studnet.get("number"));
+            user.setPassword(passwordEncoder.encode((String) studnet.get("number")));
+            user.setRole(Constant.Role.STUDENT_ROLE);
+            // 可能发生异常(重复数据)
+            try {
+                userService.insert(user);
+            } catch (Exception e) {
+                continue;
+            }
+            Student student = new Student();
+            student.setId(user.getId());
+            student.setClazz((String) studnet.get("clazz"));
+            studentService.insert(student);
+        }
         return null;
     }
 
@@ -74,55 +91,41 @@ public class DirectorController {
      */
     @ApiOperation("修改教师权限")
     @PatchMapping("/teachers/{uid}/role")
-    public ResultVO updateRole(@PathVariable(value = "uid") String uid) {
-        log.debug("进入==>");
+    public ResultVO updateRole(@PathVariable(value = "uid") Long uid) {
         // 判断uid指定的用户是否存在
-        User userFromDB = Optional.ofNullable(userService.getUserById(uid))
-                .orElseThrow(() -> {
-                    return new UnauthorizedException("用户不存在");
-                });
+        User userFromDB = userService.getUserById(uid);
+        if (userFromDB == null) {
+            throw new MyException(401, "用户不存在");
+        }
         // 判断是否为教师
         log.debug("userFromDB==>", userFromDB);
         Integer role = userFromDB.getRole();
         if (role != 2) {
             return ResultVO.fail(403, "无权限");
         }
-        // 修改权限为4 todo 判断操作是否成功
+        // 修改权限为4
         userService.updateRole(uid);
-        log.debug("修改成功");
+        log.info("修改用户权限成功");
         // 返回角色
-        return ResultVO.successResultVO(Map.of("role", 4));
+        return ResultVO.success(Map.of("role", 4));
     }
 
     /**
-     * TODO
-     * 修改个人信息
-     *
      * @param uid
      * @return
      */
     @ApiOperation("更新教师基本信息, 不包括重置密码")
     @PatchMapping("/teachers/{uid}/info")
-    public ResultVO updateInfo(@PathVariable(value = "uid") String uid,
-                               @RequestBody Map<String, String> map) {
+    public ResultVO updateInfo(@PathVariable(value = "uid") Long uid,
+                               @RequestBody Map<String, Object> map) {
         // 判断uid指定的用户是否存在
         User userFromDB = Optional.ofNullable(userService.getUserById(uid))
                 .orElseThrow(() -> new UnauthorizedException("用户不存在"));
-        // 判断是否为教师
-        log.debug("userFromDB==>" + userFromDB);
-//        Integer role = userFromDB.getRole();
-//        if (role != 2) {
-//            return ResultVO.failClientResultVO()
-//                    .setMessage("用户身份不正确");
-//        }
-        log.debug("map==>" + map);
-        // 更新教师的简介信息
-        String name = map.get("name");
-        log.debug("name==>" + name);
-        String title = map.get("title");
-        log.debug("title==>" + title);
-        teacherService.updateTitle(title, uid);
-        return ResultVO.successResultVO(Map.of());
+        log.debug("userFromDB: {}", userFromDB);
+        log.debug("map: {}", map);
+        // 更新教师的基本信息
+        teacherService.updateInfo(map, uid);
+        return ResultVO.success(Map.of());
     }
 
     /**
@@ -130,21 +133,15 @@ public class DirectorController {
      */
     @ApiOperation("重置教师密码")
     @PutMapping("/teachers/{uid}/password")
-    public ResultVO updatePassword(@PathVariable(value = "uid") String uid) {
+    public ResultVO updatePassword(@PathVariable(value = "uid") Long uid) {
         // 判断uid指定的用户是否存在
         User userFromDB = Optional.ofNullable(userService.getUserById(uid))
                 .orElseThrow(() -> new UnauthorizedException("用户不存在"));
-//        // 判断是否为教师
-//        Integer role = userFromDB.getRole();
-//        if (role != 2) {
-//            return ResultVO.failClientResultVO()
-//                    .setMessage("用户身份不正确");
-//        }
         // 重置密码为number
         String newPassword = passwordEncoder.encode(userFromDB.getNumber());
         log.debug("newPassword==>" + newPassword);
         userService.updatePasswordById(uid, newPassword);
-        return ResultVO.successResultVO(Map.of());
+        return ResultVO.success(Map.of());
     }
 
     /**
@@ -152,12 +149,12 @@ public class DirectorController {
      */
     @ApiOperation("删除指定教师")
     @DeleteMapping("/teachers/{tid}")
-    public ResultVO deleteTeacher(@PathVariable("tid") String tid) {
+    public ResultVO deleteTeacher(@PathVariable("tid") Long tid) {
         // 判断uid指定的用户是否存在
-        User userFromDB = Optional.ofNullable(userService.getUserById(tid))
+        Optional.ofNullable(userService.getUserById(tid))
                 .orElseThrow(() -> new UnauthorizedException("用户不存在"));
         teacherService.deleteTeacher(tid);
-        return ResultVO.successResultVO(Map.of());
+        return ResultVO.success(Map.of());
     }
 
     /**
@@ -165,11 +162,11 @@ public class DirectorController {
      */
     @ApiOperation("删除指定学生")
     @DeleteMapping("/teachers/{sid}")
-    public ResultVO deleteStudent(@PathVariable("sid") String sid) {
+    public ResultVO deleteStudent(@PathVariable("sid") Long sid) {
         // 判断uid指定的用户是否存在
-        User userFromDB = Optional.ofNullable(userService.getUserById(sid))
+        Optional.ofNullable(userService.getUserById(sid))
                 .orElseThrow(() -> new UnauthorizedException("用户不存在"));
         studentService.deleteStudent(sid);
-        return ResultVO.successResultVO(Map.of());
+        return ResultVO.success(Map.of());
     }
 }

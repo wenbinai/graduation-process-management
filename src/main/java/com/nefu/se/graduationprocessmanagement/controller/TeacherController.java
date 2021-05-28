@@ -1,6 +1,5 @@
 package com.nefu.se.graduationprocessmanagement.controller;
 
-import com.nefu.se.graduationprocessmanagement.component.CommonComponent;
 import com.nefu.se.graduationprocessmanagement.service.TeacherService;
 import com.nefu.se.graduationprocessmanagement.vo.ResultVO;
 import io.swagger.annotations.Api;
@@ -19,9 +18,9 @@ public class TeacherController {
 
     @ApiOperation("修改教师描述信息")
     @PatchMapping("/info")
-    public ResultVO updateInfo(@RequestBody Map<String, String> map,
+    public ResultVO updateInfo(@RequestBody Map<String, Object> map,
                                @RequestAttribute("id") long id) {
         teacherService.updateInfo(map, id);
-        return ResultVO.successResultVO(Map.of());
+        return ResultVO.success(Map.of());
     }
 }

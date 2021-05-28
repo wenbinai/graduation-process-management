@@ -3,11 +3,9 @@ package com.nefu.se.graduationprocessmanagement.controller;
 import com.nefu.se.graduationprocessmanagement.component.CommonComponent;
 import com.nefu.se.graduationprocessmanagement.common.EncryptorComponent;
 import com.nefu.se.graduationprocessmanagement.entity.User;
-import com.nefu.se.graduationprocessmanagement.common.UnauthorizedException;
 import com.nefu.se.graduationprocessmanagement.service.UserService;
 import com.nefu.se.graduationprocessmanagement.vo.ResultVO;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
-import java.util.Optional;
 
 
 @RestController
@@ -43,7 +40,7 @@ public class LoginController {
         // 设置 header
         commonComponent.setResponseHeader(encryptorComponent.userToJson(u));
         // 返回随机生成的10位随机字符
-        return ResultVO.successResultVO(Map.of("role", getRoleHex(u.getRole())));
+        return ResultVO.success(Map.of("role", getRoleHex(u.getRole())));
     }
 
     private String getRoleHex(int roleId) {

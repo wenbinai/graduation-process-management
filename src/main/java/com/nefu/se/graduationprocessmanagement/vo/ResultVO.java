@@ -15,7 +15,7 @@ public class ResultVO {
     private Map<String, Object> data;
 
 
-    public static ResultVO successResultVO(Map data) {
+    public static ResultVO success(Map data) {
         return ResultVO.builder()
                 .code(200)
                 .data(data)

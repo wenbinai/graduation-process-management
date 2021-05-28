@@ -2,8 +2,10 @@ package com.nefu.se.graduationprocessmanagement.common;
 
 public interface Constant {
     interface Role {
-        String STUDENT_ROLE = "";
-        String ADMIN_ROLE = "";
+        Integer STUDENT_ROLE = 1;
+        Integer ADMIN_ROLE = 8;
+        Integer TEACHER_ROLE = 2;
+        Integer DIRECTOR_ROLE = 4;
     }
 
     String AUTHORIZATION = "authorization";

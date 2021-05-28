@@ -1,6 +1,6 @@
 package com.nefu.se.graduationprocessmanagement.controller;
 
-import com.nefu.se.graduationprocessmanagement.dto.TeacherDto;
+import com.nefu.se.graduationprocessmanagement.dto.TeacherDTO;
 import com.nefu.se.graduationprocessmanagement.entity.Teacher;
 import com.nefu.se.graduationprocessmanagement.entity.User;
 import com.nefu.se.graduationprocessmanagement.service.TeacherService;
@@ -31,52 +31,47 @@ public class AdminController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @ApiOperation("列出所有教师")
-    @GetMapping("/teachers")
-    public ResultVO listTeachers() {
-        // TODO: 添加Redis缓存
-        List<Teacher> teachers = teacherService.listTeachers();
-        return ResultVO.successResultVO(Map.of("teachers", teachers));
-    }
 
-    // TODO: 重构逻辑
     @ApiOperation("导入教师名单")
     @PostMapping("/teachers")
-    public ResultVO initTeachers(@RequestBody List<TeacherDto> teacherDtos) {
-        // TODO 对teacherDto 进行判断检验
-        // 忽略 role 为 4 的
+    public ResultVO initTeachers(@RequestBody List<TeacherDTO> teacherDtos) {
+        // 获取role为2
         teacherDtos = teacherDtos.stream()
                 .filter(teacherDto -> {
                     log.debug("roleId ==>" + teacherDto.getRole());
                     log.debug("isTrue==>" + teacherDto.getRole().equals("4"));
-                    return !teacherDto.getRole().equals("4");
+                    return teacherDto.getRole().equals("2");
                 })
                 .collect(Collectors.toList());
         log.debug("teacherDots ==>" + teacherDtos);
-        // 去掉重复数据
-        // 获取数据库已插入的所有数据
-        List<User> users = userService.listAllUsers();
-        // 数据库中存在用户的numbers
-        List<String> allUserNumbers = users.stream().map(User::getNumber).collect(Collectors.toList());
-        // 获取没有重复的的用户
-        teacherDtos = teacherDtos.stream()
-                .filter(teacherDto -> {
-                    log.debug("isContains ==>" + allUserNumbers.contains(teacherDto.getNumber()));
-                    return !allUserNumbers.contains(teacherDto.getNumber());
-                })
-                .collect(Collectors.toList());
-        log.debug("teacherDots ==>" + teacherDtos);
+        // 去掉重复数据 (number 加上唯一索引)
+//        // 获取数据库已插入的所有数据
+//        List<User> users = userService.listAllUsers();
+//        // 数据库中存在用户的numbers
+//        List<String> allUserNumbers = users.stream().map(User::getNumber).collect(Collectors.toList());
+//        // 获取没有重复的的用户
+//        teacherDtos = teacherDtos.stream()
+//                .filter(teacherDto -> {
+//                    log.debug("isContains ==>" + allUserNumbers.contains(teacherDto.getNumber()));
+//                    return !allUserNumbers.contains(teacherDto.getNumber());
+//                })
+//                .collect(Collectors.toList());
+//        log.debug("teacherDots ==>" + teacherDtos);
 
         // 将数据插入到数据库中
         // TODO 测试发生异常事务回滚
-        teacherDtos.forEach((teacherDto -> {
+        for (TeacherDTO teacherDto : teacherDtos) {
             // 插入到User表中
             User user = new User();
             user.setNumber(teacherDto.getNumber());
             user.setName(teacherDto.getName());
             user.setPassword(passwordEncoder.encode(teacherDto.getNumber()));
             user.setRole(Integer.valueOf(teacherDto.getRole()));
-            userService.addUser(user);
+            try {
+                userService.addUser(user);
+            } catch (Exception e) {
+                continue;
+            }
             // 插入到teacher表中
             Teacher teacher = new Teacher();
             // 复用id
@@ -84,11 +79,9 @@ public class AdminController {
             teacher.setTitle(teacherDto.getTitle());
             teacher.setQuantity(0);
             teacherService.addTeacher(teacher);
-        }));
+        }
+        List<TeacherDTO> teacherDTOs = teacherService.listTeachers();
 
-        List<Teacher> teachers = teacherService.listTeachers();
-
-        // TODO 返回值需要修改
-        return ResultVO.successResultVO(Map.of("teachers", teachers));
+        return ResultVO.success(Map.of("teachers", teacherDTOs));
     }
 }

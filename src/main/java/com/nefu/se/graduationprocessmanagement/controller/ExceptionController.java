@@ -93,8 +93,8 @@ public class ExceptionController {
         return ResultVO.fail(400, strBuilder.toString());
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResultVO handleException(Exception exception) {
-        return ResultVO.fail(400, "请求错误");
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResultVO handleException(Exception exception) {
+//        return ResultVO.fail(400, "请求错误");
+//    }
 }
