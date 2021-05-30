@@ -2,6 +2,7 @@ package com.nefu.se.graduationprocessmanagement.interceptor;
 
 import com.nefu.se.graduationprocessmanagement.common.Constant;
 import com.nefu.se.graduationprocessmanagement.common.EncryptorComponent;
+import com.nefu.se.graduationprocessmanagement.common.MyException;
 import com.nefu.se.graduationprocessmanagement.vo.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 @Component
 @Slf4j
-public class DirectorInterceptor extends HandlerInterceptorAdapter {
+public class TeacherInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private EncryptorComponent encryptorComponent;
 
@@ -27,17 +28,13 @@ public class DirectorInterceptor extends HandlerInterceptorAdapter {
             log.debug("map ==>" + map);
             Integer roleId = (Integer) map.get("rId");
             log.debug("roleId==>" + roleId);
-            if (roleId >= Constant.Role.DIRECTOR_ROLE) {
+            if (roleId >= Constant.Role.TEACHER_ROLE) {
                 return true;
             } else {
-                request.setAttribute("exception", ResultVO.fail(403, "权限不够"));
-                request.getRequestDispatcher("/api/exception").forward(request, response);
-                return false;
+                throw new MyException(403, "权限不足");
             }
         } catch (Exception e) {
-            request.setAttribute("exception", ResultVO.fail(403, "权限不够"));
-            request.getRequestDispatcher("/api/exception").forward(request, response);
-            return false;
+            throw new MyException(403, "权限不足");
         }
     }
 }
