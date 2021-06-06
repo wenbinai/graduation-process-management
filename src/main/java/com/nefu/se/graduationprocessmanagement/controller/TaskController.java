@@ -5,6 +5,7 @@ import com.nefu.se.graduationprocessmanagement.dto.TeacherDTO;
 import com.nefu.se.graduationprocessmanagement.entity.Student;
 import com.nefu.se.graduationprocessmanagement.entity.Task;
 import com.nefu.se.graduationprocessmanagement.service.StudentService;
+import com.nefu.se.graduationprocessmanagement.service.TaskService;
 import com.nefu.se.graduationprocessmanagement.service.TeacherService;
 import com.nefu.se.graduationprocessmanagement.vo.ResultVO;
 import io.swagger.annotations.Api;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +30,8 @@ public class TaskController {
     private StudentService studentService;
     @Autowired
     private TeacherService teacherService;
+    @Autowired
+    private TaskService taskService;
 
     @ApiOperation("创建选择导师任务")
     @PostMapping("choice")
@@ -48,10 +52,18 @@ public class TaskController {
         Task task = new Task();
         task.setTitle(taskDTO.getTitle());
         task.setDescription(taskDTO.getDescription());
-        task.setStartTime(taskDTO.getStartTime());
-        task.setEndTime(taskDTO.getEndTime());
+        task.setStartTime(LocalDateTime.parse(taskDTO.getStartTime()));
+        task.setEndTime(LocalDateTime.parse(taskDTO.getEndTime()));
+        // 插入数据库中
+        taskService.insert(task);
         // todo 创建一个定时任务
+        taskService.createScheduleTask(taskDTO.getStartTime(), taskDTO.getEndTime());
         log.debug("创建{}任务成功", task.getTitle());
         return ResultVO.success(Map.of());
     }
+
+    // 前端创建任务 --> 后端开始创建定时任务 --> (对应任务的api 在对应时间内开放) --> 通知前端
+
+
+    // 执行对应任务api的时候, 判断时间是否在范围,
 }
