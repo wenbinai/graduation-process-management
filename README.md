@@ -1,4 +1,13 @@
 # graduation-process-management
+
+
+#### 21-06-19
+TODO
+- 解决悲观锁死锁问题
+  
+- 解决Group属性和Mysql中关键字`Group`冲突Bug
+- 解决Redis缓存序列化`LocalDateTime`的Bug
+- 添加Redis缓存
 #### 21-06-18
 - 修复删除单个学生和教师的Bug(原因: API命名重复)
 

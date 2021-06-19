@@ -74,4 +74,12 @@ public class TeacherService {
     public Teacher getTeacherById(Long tid) {
         return teacherMapper.selectById(tid);
     }
+
+    public int updateQuantityById(Teacher teacher) {
+        return teacherMapper.updateById(teacher);
+    }
+
+    public int getQuantityById(Long tid) {
+        return teacherMapper.getQuantityById(tid);
+    }
 }

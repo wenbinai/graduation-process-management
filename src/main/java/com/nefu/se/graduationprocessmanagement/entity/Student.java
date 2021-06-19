@@ -1,7 +1,10 @@
 package com.nefu.se.graduationprocessmanagement.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import java.time.LocalDateTime;
+
 import lombok.*;
 
 @Setter
@@ -16,6 +19,7 @@ public class Student {
 
     private Long teacherId;
 
+    @TableField(value = "`group`")
     private Integer group;
 
     private String topic;

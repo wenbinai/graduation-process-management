@@ -24,6 +24,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/**")
                 .excludePathPatterns("/api/login")
                 .excludePathPatterns("/api/exception");
+        // TODO 增加教师拦截器
+        // TODO 增加管理员拦截器
         // 增加主任拦截器
         registry.addInterceptor(directorInterceptor)
                 .addPathPatterns("/api/director/**");

@@ -1,6 +1,10 @@
 package com.nefu.se.graduationprocessmanagement.common;
 
 public interface Constant {
+    interface Redis {
+        String TEACHER_QUANTITY_KEY = "teachers";
+    }
+
     interface Role {
         Integer STUDENT_ROLE = 1;
         Integer ADMIN_ROLE = 9;

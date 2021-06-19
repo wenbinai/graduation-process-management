@@ -21,9 +21,13 @@ public interface TeacherMapper extends BaseMapper<Teacher> {
     @Update("update `teacher` set title = #{title} where id = #{id}")
     int updateTitleById(@Param("title") Long title, @Param("id") String id);
 
-    @Update("update `teacher` set quantity = #{quantity} where id = #{id}")
+    @Update("update `teacher` set quantity = #{quantity} where id = #{id} ")
     int updateQuantityById(@Param("id") Long id, @Param("quantity") int quantity);
 
 
     List<TeacherInfoDTO> listTeacherInfos();
+
+    // 使用悲观锁
+    @Select("select quantity from `teacher` where id = #{id} for update")
+    int getQuantityById(Long tid);
 }
