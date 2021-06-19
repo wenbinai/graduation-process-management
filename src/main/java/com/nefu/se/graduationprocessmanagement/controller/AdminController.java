@@ -1,5 +1,7 @@
 package com.nefu.se.graduationprocessmanagement.controller;
 
+import com.nefu.se.graduationprocessmanagement.common.Constant;
+import com.nefu.se.graduationprocessmanagement.common.MyException;
 import com.nefu.se.graduationprocessmanagement.dto.TeacherDTO;
 import com.nefu.se.graduationprocessmanagement.entity.Teacher;
 import com.nefu.se.graduationprocessmanagement.entity.User;
@@ -66,7 +68,7 @@ public class AdminController {
             user.setNumber(teacherDto.getNumber());
             user.setName(teacherDto.getName());
             user.setPassword(passwordEncoder.encode(teacherDto.getNumber()));
-            user.setRole(Integer.valueOf(teacherDto.getRole()));
+            user.setRole(Constant.Role.TEACHER_ROLE);
             try {
                 userService.addUser(user);
             } catch (Exception e) {
@@ -78,7 +80,11 @@ public class AdminController {
             teacher.setId(user.getId());
             teacher.setTitle(teacherDto.getTitle());
             teacher.setQuantity(0);
-            teacherService.addTeacher(teacher);
+            try {
+                teacherService.addTeacher(teacher);
+            } catch (Exception e) {
+                continue;
+            }
         }
         List<TeacherDTO> teacherDTOs = teacherService.listTeachers();
 

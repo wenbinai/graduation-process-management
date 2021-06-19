@@ -3,7 +3,9 @@ package com.nefu.se.graduationprocessmanagement.service;
 import com.nefu.se.graduationprocessmanagement.dto.TeacherDTO;
 import com.nefu.se.graduationprocessmanagement.dto.TeacherInfoDTO;
 import com.nefu.se.graduationprocessmanagement.entity.Teacher;
+import com.nefu.se.graduationprocessmanagement.entity.User;
 import com.nefu.se.graduationprocessmanagement.mapper.TeacherMapper;
+import com.nefu.se.graduationprocessmanagement.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,8 @@ import java.util.Map;
 public class TeacherService {
     @Autowired
     private TeacherMapper teacherMapper;
+    @Autowired
+    private UserMapper userMapper;
 
 
     /**
@@ -37,6 +41,11 @@ public class TeacherService {
             teacher.setDescription((String) map.get("description"));
         if (map.get("group") != null)
             teacher.setGroup((Short) map.get("group"));
+        if (map.get("name") != null) {
+            User user = new User();
+            user.setName((String) map.get("name"));
+            userMapper.updateById(user);
+        }
         teacherMapper.updateById(teacher);
     }
 
@@ -60,5 +69,9 @@ public class TeacherService {
 
     public List<TeacherInfoDTO> listTeacherInfos() {
         return teacherMapper.listTeacherInfos();
+    }
+
+    public Teacher getTeacherById(Long tid) {
+        return teacherMapper.selectById(tid);
     }
 }

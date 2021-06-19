@@ -13,7 +13,7 @@ public class JacksonConfiguration {
     @Autowired
     private MappingJackson2HttpMessageConverter converter;
 
-    // TODO: 理解该注解的作用
+
     // 直接注入springboot默认基于配置创建的对象，添加配置
     @PostConstruct
     void converter() {

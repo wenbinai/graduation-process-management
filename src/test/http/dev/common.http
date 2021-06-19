@@ -1,3 +1,8 @@
+### 获取用户基本信息
+GET http://localhost:8080/api/common/info
+authorization: 67f0eefb9d229897c5958b2ef1f85b94ea23f5e17551517e9251320cfa7ce504fc20704712be40d5ec5020c1d42f182aabe598ef0f53e178aad8cb11475acaa5
+Content-Type: application/json
+
 ### 获取所有老师信息
 GET http://localhost:8080/api/common/teachers
 authorization: e0dfa4811c3abf10345c6d36d818610429e0c3b9ce8540bdac10201495ef4b3fe6d7fba74a96a8bcdad30475888b8d1e5fb3dc6b3b9960a509d072d63a9acbce

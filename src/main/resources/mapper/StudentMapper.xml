@@ -4,6 +4,6 @@
     <select id="listStudentInfos" resultType="com.nefu.se.graduationprocessmanagement.dto.StudentInfoDTO">
         select u.name, u.number, s.*
         from user u join student s
-        where u.id = s.id
+        where u.role = 1 and u.id = s.id
     </select>
 </mapper>

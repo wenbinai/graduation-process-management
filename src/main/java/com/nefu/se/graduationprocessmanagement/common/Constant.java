@@ -3,7 +3,7 @@ package com.nefu.se.graduationprocessmanagement.common;
 public interface Constant {
     interface Role {
         Integer STUDENT_ROLE = 1;
-        Integer ADMIN_ROLE = 8;
+        Integer ADMIN_ROLE = 9;
         Integer TEACHER_ROLE = 2;
         Integer DIRECTOR_ROLE = 4;
     }

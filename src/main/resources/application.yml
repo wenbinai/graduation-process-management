@@ -3,6 +3,15 @@ spring:
     name: graduation-process-management
   profiles:
     active: dev
+  redis:
+    host: 122.9.36.233
+    port: 6379
+    database: 0
+    password: 123456
+  cache: # 整合cache redis。代码声明详细配置时无效
+    redis:
+      cache-null-values: true # 默认值，可省略。缓存空数据，避免缓存穿透
+      time-to-live: 50000 # 单位毫秒，50秒
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:

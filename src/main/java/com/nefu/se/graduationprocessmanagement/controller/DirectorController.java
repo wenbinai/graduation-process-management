@@ -5,6 +5,7 @@ import com.nefu.se.graduationprocessmanagement.common.MyException;
 import com.nefu.se.graduationprocessmanagement.dto.TeacherDTO;
 import com.nefu.se.graduationprocessmanagement.dto.TeacherQuantity;
 import com.nefu.se.graduationprocessmanagement.entity.Student;
+import com.nefu.se.graduationprocessmanagement.entity.Teacher;
 import com.nefu.se.graduationprocessmanagement.entity.User;
 import com.nefu.se.graduationprocessmanagement.common.UnauthorizedException;
 import com.nefu.se.graduationprocessmanagement.service.StudentService;
@@ -16,6 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +28,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/director")
 @Slf4j
+@Transactional
 public class DirectorController {
     @Autowired
     private UserService userService;
@@ -45,15 +48,48 @@ public class DirectorController {
      */
     @ApiOperation("统一更新全部教师带学生数目")
     @PatchMapping("/teachers/quantity")
-    public ResultVO updateQuantity(@RequestBody List<Map<String, Object>> teacherQuantities) {
+    public ResultVO updateAllQuantity(@RequestBody List<TeacherQuantity> teacherQuantities) {
         teacherQuantities.stream()
                 .forEach((teacherQuantity) -> {
-                    teacherService.updateQuantity((Long) teacherQuantity.get("id"), (Integer) teacherQuantity.get("quantity"));
+                    // TODO: 类型转换问题 优化批量更新数据
+                    teacherService.updateQuantity(teacherQuantity.getId(),
+                            teacherQuantity.getQuantity());
                 });
         List<TeacherDTO> teachers = teacherService.listTeachers();
         log.debug("after update teachers ==>" + teachers);
         return ResultVO.success(Map.of("teachers", teachers));
     }
+
+    @ApiOperation(("添加教师"))
+    @PostMapping("teacher")
+    public ResultVO addTeacher(@RequestBody TeacherDTO teacherDTO) {
+        User user = new User();
+        user.setNumber(teacherDTO.getNumber());
+        user.setName(teacherDTO.getName());
+        user.setPassword(passwordEncoder.encode(teacherDTO.getNumber()));
+        user.setRole(Constant.Role.TEACHER_ROLE);
+        try {
+            userService.addUser(user);
+        } catch (Exception e) {
+            throw new MyException(200, "添加失败");
+        }
+        // 插入到teacher表中
+        Teacher teacher = new Teacher();
+        // 复用id
+        teacher.setId(user.getId());
+        teacher.setTitle(teacherDTO.getTitle());
+        teacher.setQuantity(0);
+        try {
+            teacherService.addTeacher(teacher);
+        } catch (Exception e) {
+            throw new MyException(200, "添加失败");
+        }
+
+        List<TeacherDTO> teacherDTOs = teacherService.listTeachers();
+
+        return ResultVO.success(Map.of("teachers", teacherDTOs));
+    }
+
 
     /**
      * 导入学生功能
@@ -80,7 +116,8 @@ public class DirectorController {
             student.setClazz((String) studnet.get("clazz"));
             studentService.insert(student);
         }
-        return null;
+        // TODO: 与前端确认返回数据
+        return ResultVO.success(Map.of());
     }
 
     /**
@@ -144,12 +181,10 @@ public class DirectorController {
         return ResultVO.success(Map.of());
     }
 
-    /**
-     * 删除指定教师
-     */
+
     @ApiOperation("删除指定教师")
     @DeleteMapping("/teachers/{tid}")
-    public ResultVO deleteTeacher(@PathVariable("tid") Long tid) {
+    public ResultVO deleteTeacher(@PathVariable(value = "tid") Long tid) {
         // 判断uid指定的用户是否存在
         Optional.ofNullable(userService.getUserById(tid))
                 .orElseThrow(() -> new UnauthorizedException("用户不存在"));
@@ -157,12 +192,10 @@ public class DirectorController {
         return ResultVO.success(Map.of());
     }
 
-    /**
-     * 删除指定学生
-     */
+
     @ApiOperation("删除指定学生")
-    @DeleteMapping("/teachers/{sid}")
-    public ResultVO deleteStudent(@PathVariable("sid") Long sid) {
+    @DeleteMapping("/students/{sid}")
+    public ResultVO deleteStudent(@PathVariable(value = "sid") Long sid) {
         // 判断uid指定的用户是否存在
         Optional.ofNullable(userService.getUserById(sid))
                 .orElseThrow(() -> new UnauthorizedException("用户不存在"));
