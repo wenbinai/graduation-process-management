@@ -1,7 +1,9 @@
 package com.nefu.se.graduationprocessmanagement.controller;
 
+import com.nefu.se.graduationprocessmanagement.common.Constant;
 import com.nefu.se.graduationprocessmanagement.dto.TaskDTO;
 import com.nefu.se.graduationprocessmanagement.dto.TeacherDTO;
+import com.nefu.se.graduationprocessmanagement.dto.TeacherInfoDTO;
 import com.nefu.se.graduationprocessmanagement.entity.Student;
 import com.nefu.se.graduationprocessmanagement.entity.Task;
 import com.nefu.se.graduationprocessmanagement.service.StudentService;
@@ -50,12 +52,27 @@ public class TaskController {
         }
         // 相同, 创建task
         Task task = new Task();
+        task.setStatus(1);
+        task.setType(Constant.TaskType.CHOOSE_MENTOR);
         task.setTitle(taskDTO.getTitle());
         task.setDescription(taskDTO.getDescription());
+        // TODO 优化格式转换
+        String startTime = taskDTO.getStartTime();
+        int i = startTime.indexOf('.');
+        taskDTO.setStartTime(startTime.substring(0, i));
         task.setStartTime(LocalDateTime.parse(taskDTO.getStartTime()));
+        String endTime = taskDTO.getEndTime();
+        i = endTime.indexOf('.');
+        taskDTO.setEndTime(endTime.substring(0, i));
         task.setEndTime(LocalDateTime.parse(taskDTO.getEndTime()));
         // 插入数据库中
         taskService.insert(task);
+        //todo 向Redis中添加数据
+        List<TeacherInfoDTO> teacherInfoDTOS = teacherService.listTeacherInfos();
+        teacherInfoDTOS.stream()
+                .forEach((teacherInfoDTO -> {
+                    studentService.initTeacherQuantity(teacherInfoDTO.getId(), teacherInfoDTO.getQuantity());
+                }));
         // todo 创建一个定时任务
         taskService.createScheduleTask(taskDTO.getStartTime(), taskDTO.getEndTime());
         log.debug("创建{}任务成功", task.getTitle());

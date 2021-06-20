@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Slf4j
@@ -32,6 +34,9 @@ public class StudentService {
 
     private HashOperations<String, Long, Integer> ho;
     private String key = Constant.Redis.TEACHER_QUANTITY_KEY;
+    public ArrayBlockingQueue<Long> queue = new ArrayBlockingQueue<Long>(100);
+    // 避免重复选择
+    private ConcurrentHashMap<Long, Integer> map = new ConcurrentHashMap<>();
 
     // 初始化一个HashOperations操作对象，避免反复创建
     @PostConstruct
@@ -46,6 +51,8 @@ public class StudentService {
     // 学生选择导师
     public boolean chooseMentor(Long sid, Long tid) {
         // 1. 判断是否选择了导师
+        if (map.get(sid) != null) return false;
+        else map.put(sid, 1);
         Student student = getStudentById(sid);
         if (student == null || student.getTeacherId() != null) {
             return false;
@@ -61,8 +68,15 @@ public class StudentService {
         ho.put(key, teacher.getId(), teacher.getQuantity());
     }
 
+    public void initTeacherQuantity(Long id, Integer quantity) {
+        ho.put(key, id, quantity);
+    }
+
     // 学生选择导师具体过程
     public boolean choose(Student student, Long tid) {
+//        if (!map.get(student.getId()).equals(1)) return false;
+//        else map.put(sid, 1);
+        Long stid = student.getTeacherId();
         if (student.getTeacherId() != null) return false;
         if (!ho.hasKey(key, tid)) {
             log.debug("已达到导师上限, 请选择其他导师");
@@ -70,6 +84,7 @@ public class StudentService {
         }
         // increment()/set() 单线程
         // get() 多线程
+        // TODO 使用布隆过滤器/Set过滤重复请求
         if (ho.increment(key, tid, -1) < 0) {
             log.debug("已达到导师上限, 请选择其他导师");
             return false;
@@ -78,26 +93,40 @@ public class StudentService {
 
         // <==================多线程更新数据库============>
         log.debug("进入studentId: {}", student.getId());
+        try {
+            queue.put(student.getId());
+        } catch (InterruptedException e) {
+            return false;
+        }
         Teacher teacher = teacherService.getTeacherById(tid);
         // 抢购成功, 写进数据库 TODO 使用消息队列异步完成
         // 悲观锁方案(for update)   TODO 乐观锁方案
-        int quantity = teacherService.getQuantityById(tid);
+        int quantity = teacherService.getQuantityByIdForUpdate(tid);
         if (quantity <= 0) {
-            throw new MyException(401, "该教师指导学生数目已满, 不能选择, 请选择其他老师");
+            return false;
         }
-//        teacher.setQuantity(quantity - 1);
-        int update = teacherService.updateQuantity(tid, quantity - 1);
-        if (update <= 0) {
-            throw new MyException(401, "乐观锁更新失败");
-        } else {
-            // TODO 解决用户多次设置教师 防止单个用户请求多次
-            if (student.getTeacherId() != null) return false;
-            student.setTeacherId(tid);
-            studentMapper.updateById(student);
-            log.debug("插入成功ID: {}", student.getId());
+        try {
+            int update = teacherService.updateQuantity(tid, quantity - 1);
+            if (update <= 0) {
+                return false;
+            } else {
+                insertTeacherId(student, tid);
+            }
+        } catch (Exception e) {
+            return false;
         }
         return true;
     }
+
+    // 插入数据库中
+    private void insertTeacherId(Student student, Long tid) {
+        // TODO 解决用户多次设置教师 防止单个用户请求多次
+        if (student.getTeacherId() != null) return;
+        student.setTeacherId(tid);
+        studentMapper.updateById(student);
+        log.debug("插入成功ID: {}", student.getId());
+    }
+
 
     @CacheEvict(value = "user", key = "#sid")
     public int deleteStudent(Long sid) {

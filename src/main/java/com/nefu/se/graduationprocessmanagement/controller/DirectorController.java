@@ -2,6 +2,7 @@ package com.nefu.se.graduationprocessmanagement.controller;
 
 import com.nefu.se.graduationprocessmanagement.common.Constant;
 import com.nefu.se.graduationprocessmanagement.common.MyException;
+import com.nefu.se.graduationprocessmanagement.dto.StudentInfoDTO;
 import com.nefu.se.graduationprocessmanagement.dto.TeacherDTO;
 import com.nefu.se.graduationprocessmanagement.dto.TeacherQuantity;
 import com.nefu.se.graduationprocessmanagement.entity.Student;
@@ -116,8 +117,8 @@ public class DirectorController {
             student.setClazz((String) studnet.get("clazz"));
             studentService.insert(student);
         }
-        // TODO: 与前端确认返回数据
-        return ResultVO.success(Map.of());
+        List<StudentInfoDTO> studentInfoDTOS = studentService.listStudentInfos();
+        return ResultVO.success(Map.of("students", studentInfoDTOS));
     }
 
     /**

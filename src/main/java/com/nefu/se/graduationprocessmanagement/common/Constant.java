@@ -1,6 +1,10 @@
 package com.nefu.se.graduationprocessmanagement.common;
 
 public interface Constant {
+    interface TaskType {
+        Integer CHOOSE_MENTOR = 1;
+    }
+
     interface Redis {
         String TEACHER_QUANTITY_KEY = "teachers";
     }

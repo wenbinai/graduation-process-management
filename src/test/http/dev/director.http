@@ -10,8 +10,8 @@ authorization: bc1658e8f53ab7b6f81ca89edce91a056ff2cc66ab611814218ad3f9698f223cf
 Content-Type: application/json
 
  {
-    "number": "2018554444",
-    "name": "ACoder",
+    "number": "2018664444",
+    "name": "AC",
     "role": "2",
     "title": "教师"
  }
@@ -72,8 +72,8 @@ Content-Type: application/json
 
 [
   {
-    "number": "2018274444",
-    "name": "艾文斌7",
+    "number": "2018304444",
+    "name": "艾文斌10",
     "clazz": "软件工程2018-01"
   },
   {

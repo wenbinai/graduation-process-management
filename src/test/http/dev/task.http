@@ -6,8 +6,8 @@ Content-Type: application/json
 {
   "title": "选导师",
   "description": "毕业生在截至时间前，选择毕设指导教师",
-  "startTime": "2021-02-20T08:00",
-  "endTime": "2021-02-25T20:00"
+  "startTime": "2021-06-09T16:00:00.000Z",
+  "endTime": "2021-06-29T16:00:00.000Z"
 }
 
 ###

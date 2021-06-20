@@ -58,6 +58,10 @@ public class TeacherService {
         return teacherMapper.listAllTeachers();
     }
 
+//    public List<Teacher> listTDBeacher() {
+//        return teacherMapper.
+//    }
+
 
     public int deleteTeacher(Long tid) {
         return teacherMapper.deleteById(tid);
@@ -77,6 +81,10 @@ public class TeacherService {
 
     public int updateQuantityById(Teacher teacher) {
         return teacherMapper.updateById(teacher);
+    }
+
+    public int getQuantityByIdForUpdate(Long tid) {
+        return teacherMapper.getQuantityByIdForUpdate(tid);
     }
 
     public int getQuantityById(Long tid) {

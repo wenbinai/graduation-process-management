@@ -29,5 +29,8 @@ public interface TeacherMapper extends BaseMapper<Teacher> {
 
     // 使用悲观锁
     @Select("select quantity from `teacher` where id = #{id} for update")
+    int getQuantityByIdForUpdate(Long tid);
+
+    @Select("select quantity from `teacher` where id = #{id}")
     int getQuantityById(Long tid);
 }

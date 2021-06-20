@@ -12,7 +12,9 @@ import java.util.List;
 @Repository
 @Mapper
 public interface StudentMapper extends BaseMapper<Student> {
-    @Select("select count(*) from student")
+    @Select("select count(*)\n" +
+            "        from user u join student s\n" +
+            "        where u.role = 1 and u.id = s.id;")
     Integer count();
 
     List<StudentInfoDTO> listStudentInfos();

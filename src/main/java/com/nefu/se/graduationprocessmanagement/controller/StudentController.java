@@ -20,6 +20,11 @@ public class StudentController {
     @Autowired
     private TeacherService teacherService;
 
+//    @GetMapping("/choose/mentor")
+//    public ResultVO startChooseMentor() {
+//
+//    }
+
     @PostMapping("/mentor/{tid}")
     public ResultVO chooseMentor(
             @RequestAttribute("id") Long id,
